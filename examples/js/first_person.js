@@ -1,6 +1,8 @@
 var VERTICAL_DELTA = 5;
 var VERTICAL_SPEED = 1;
 
+var ball;
+
 var renderer, camera;
 var scene, element;
 var ambient, point;
@@ -13,7 +15,7 @@ var deltaPosY = 0;
 var controls;
 var clock;
 
-var useRift = false;
+var useRift = true;
 
 var riftCam;
 
@@ -98,10 +100,10 @@ function initGeometry(){
 
   scene.add(floor);
 
-  var ball = new Physijs.SphereMesh(
+  ball = new Physijs.SphereMesh(
           new THREE.SphereGeometry(Math.random() * (4-1) + 1, 16, 16),
-          Physijs.createMaterial(new THREE.MeshLambertMaterial({color:0xff0000, reflectivity: 0.8}), .4, .6), 1);
-  ball.position.set(0, 150, 0);
+          Physijs.createMaterial(new THREE.MeshLambertMaterial({color:0xff0000, reflectivity: 0.8}), .8, .6), 7);
+  ball.position.set(100, 150, 100);
   scene.add(ball);
   // add some boxes
   /*
@@ -342,10 +344,11 @@ function updateInput(delta) {
   //velocity.y -= 0.15;
   //bodyPosition.y += velocity.y;
   
-  if(bodyPosition.y < 15){
-    velocity.y *= -0.12;
-    bodyPosition.y = 15;
-  }
+  //if(bodyPosition.y < 15){
+  //  velocity.y *= -0.12;
+  //  bodyPosition.y = 15;
+  //}
+  bodyPosition = ball.position;
 
   // update the camera position when rendering to the oculus rift.
   if(useRift) {
