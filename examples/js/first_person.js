@@ -31,6 +31,25 @@ var viewAngle;
 var velocity;
 var oculusBridge;
 
+var particleCount = 1800,
+    particles = new THREE.Geometry(),
+    pMaterial = new THREE.ParticleBasicMaterial({
+        size: 1,
+        map: THREE.ImageUtils.loadTexture("/images/raindrop.png"),
+        blending: THREE.AdditiveBlending,
+        transparent: true
+    });
+
+for (var p = 0; p < particleCount; p++) {
+    var pX = Math.random() * 500 - 250,
+    pY = Math.random() * 500 - 250,
+    pZ = Math.random() * 500 - 250,
+    particle = new THREE.Vertex(new THREE.Vector3(pX, pY, pZ));
+
+    // add it to the geometry
+    particles.vertices.push(particle);
+}
+
 // Map for key states
 var keys = [];
 for(var i = 0; i < 130; i++){
@@ -60,12 +79,14 @@ function initScene() {
 
   // Initialize the renderer
   renderer = new THREE.WebGLRenderer({antialias:true});
-  renderer.setClearColor(0xdbf7ff);
+  //renderer.setClearColor(0xdbf7ff);
+  renderer.setClearColor(0x839499);
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.shadowMapEnabled = true;
   renderer.shadowMapSoft = true;
 
-  scene.fog = new THREE.Fog(0xdbf7ff, 300, 700);
+  //scene.fog = new THREE.Fog(0xdbf7ff, 300, 700);
+  scene.fog = new THREE.Fog(0x839499, 300, 700);
 
   element = document.getElementById('viewport');
   element.appendChild(renderer.domElement);
@@ -84,6 +105,10 @@ function initLights(){
   point.castShadow = true;
   
   scene.add(point);
+
+  var particleSystem = new THREE.ParticleSystem(particles, pMaterial);
+  particleSystem.sortParticles = true;
+  scene.add(particleSystem);
 }
 
 var floorTexture;
