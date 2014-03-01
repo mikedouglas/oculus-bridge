@@ -271,6 +271,7 @@ function onKeyDown(event) {
   // prevent repeat keystrokes.
   if(!keys[32] && (event.keyCode == 32)){ // Spacebar to jump
     velocity.y += 1.9;
+    ball.applyCentralImpulse(new THREE.Vector3(0, 300, 0));
   }
 
   keys[event.keyCode] = true;
@@ -286,14 +287,6 @@ function updateInput(delta) {
   
   var step        = 25 * delta;
   var turn_speed  = (55 * delta) * Math.PI / 180;
-
-
-  // Forward/backward
-  
-  if(keys[32]) { // Space
-      ball.position.y += step;
-      ball.__dirtyPosition = true;
-  }
 
   if(keys[87] || keys[38]){ // W or UP
       bodyPosition.x += Math.cos(viewAngle) * step;
@@ -326,16 +319,13 @@ function updateInput(delta) {
       bodyPosition.x += Math.cos(viewAngle+Math.PI/2) * step;
       bodyPosition.z += Math.sin(viewAngle+Math.PI/2) * step;
   }
+
   
 
   //velocity.y -= 0.15;
   //bodyPosition.y += velocity.y;
   
-  if(ball.position.y < 15){
-  //  velocity.y *= -0.12;
-    ball.position.y = 15;
-  }
-
+  
   // update the camera position when rendering to the oculus rift.
   if(useRift) {
     camera.position.set(ball.position.x, ball.position.y, ball.position.z);
