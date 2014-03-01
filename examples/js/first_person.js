@@ -58,7 +58,7 @@ function initScene() {
   camera = new THREE.PerspectiveCamera(45, aspectRatio, 1, 10000);
 
   camera.position.set(100, 150, 100);
-  camera.lookAt(new THREE.Vector3(0, 150, 0);
+  camera.lookAt(new THREE.Vector3(0, 150, 0));
 
   // Initialize the renderer
   renderer = new THREE.WebGLRenderer({antialias:true});
