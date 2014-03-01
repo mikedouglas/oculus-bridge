@@ -62,6 +62,8 @@ function initScene() {
   renderer = new THREE.WebGLRenderer({antialias:true});
   renderer.setClearColor(0xdbf7ff);
   renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.shadowMapEnabled = true;
+  renderer.shadowMapSoft = true;
 
   scene.fog = new THREE.Fog(0xdbf7ff, 300, 700);
 
@@ -79,6 +81,7 @@ function initLights(){
 
   point = new THREE.DirectionalLight( 0xffffff, 1, 0, Math.PI, 1 );
   point.position.set( -250, 250, 150 );
+  point.castShadow = true;
   
   scene.add(point);
 }
@@ -95,6 +98,7 @@ function initGeometry(){
   var floorGeometry = new THREE.CubeGeometry(5000, 5000, 2, 10, 10);
   var floor = new Physijs.BoxMesh(floorGeometry, Physijs.createMaterial(floorMaterial, 0.4, 0.8), 0);
   floor.rotation.x = -Math.PI / 2;
+  floor.receiveShadow = true;
 
   scene.add(floor);
 

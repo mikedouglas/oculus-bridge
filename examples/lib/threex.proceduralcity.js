@@ -68,6 +68,7 @@ THREEx.ProceduralCity	= function(){
 	//var mesh = new THREE.Mesh(cityGeometry, material );
     var mesh = new Physijs.BoxMesh(cityGeometry,
             Physijs.createMaterial(material, 0.8, 0.6), 0);
+    mesh.castShadow = true;
 	return mesh
 
 	function generateTextureCanvas(){
