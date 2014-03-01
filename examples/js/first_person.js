@@ -12,6 +12,8 @@ var mouse, time;
 var controls;
 var clock;
 
+var oldCameraDir;
+
 var useRift = true;
 
 var riftCam;
@@ -55,7 +57,7 @@ function initScene() {
   camera = new THREE.PerspectiveCamera(45, aspectRatio, 1, 10000);
 
   camera.position.set(100, 150, 100);
-  camera.lookAt(new THREE.Vector3(0, 150, 0));
+  camera.lookAt(new THREE.Vector3(0, 150, 100));
 
   // Initialize the renderer
   renderer = new THREE.WebGLRenderer({antialias:true});
@@ -91,7 +93,7 @@ function initGeometry(){
   floorTexture.anisotropy = 32;
 
   var floorMaterial = new THREE.MeshBasicMaterial( { map: floorTexture } );
-  var floorGeometry = new THREE.CubeGeometry(1000, 1000, 2, 10, 10);
+  var floorGeometry = new THREE.CubeGeometry(5000, 5000, 2, 10, 10);
   var floor = new Physijs.BoxMesh(floorGeometry, Physijs.createMaterial(floorMaterial, 0.4, 0.8), 0);
   floor.rotation.x = -Math.PI / 2;
 
@@ -99,9 +101,10 @@ function initGeometry(){
 
   ball = new Physijs.SphereMesh(
           new THREE.SphereGeometry(Math.random() * (4-1) + 1, 16, 16),
-          Physijs.createMaterial(new THREE.MeshLambertMaterial({color:0xff0000, reflectivity: 0.8}), .8, .6), 7);
+          Physijs.createMaterial(new THREE.MeshLambertMaterial({color:0xff0000, reflectivity: 0.8}), .8, 0), 7);
   ball.position.set(100, 150, 100);
   scene.add(ball);
+  ball.setLinearVelocity(new THREE.Vector3(0, 0, 100));
   // add some boxes
   /*
   var boxTexture = new THREE.ImageUtils.loadTexture( "textures/blue_blue.jpg" );
@@ -121,15 +124,14 @@ function initGeometry(){
   }
   */
 
-  /*
-  for(var i = 0; i < 100; i++){
+  for(var i = 0; i < 500; i++){
     var material = new THREE.MeshLambertMaterial({ emissive:0x008000, color: 0x00FF00});
     
     var size = Math.random() * 15+3;
     
     var box = new THREE.Mesh( new THREE.CubeGeometry(size, size*0.1, size*0.1), material);
 
-    box.position.set(Math.random() * 1000 - 500, Math.random() * 100 + 100 ,Math.random() * 1000 - 500);
+    box.position.set(Math.random() * 1000 - 500, Math.random() * 1000 + 100 ,Math.random() * 1000 - 500);
     //box.rotation.set(Math.random() * Math.PI * 2, Math.random() * Math.PI * 2, Math.random() * Math.PI * 2);
     
     var speedVector;
@@ -145,7 +147,7 @@ function initGeometry(){
       speed: speedVector
     });
     scene.add(box);
-  }*/
+  }
 }
 
 
@@ -320,7 +322,14 @@ function updateInput(delta) {
       bodyPosition.z += Math.sin(viewAngle+Math.PI/2) * step;
   }
 
-  
+  var oldVelo = ball.getLinearVelocity();
+  var oldVeloY = oldVelo.y;
+  oldVelo.x = 0;
+  // ????????
+  oldVelo.z = -20;
+  oldVelo.applyQuaternion(camera.quaternion);
+  oldVelo.y = oldVeloY;
+  ball.setLinearVelocity(oldVelo);
 
   //velocity.y -= 0.15;
   //bodyPosition.y += velocity.y;
