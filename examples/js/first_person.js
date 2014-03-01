@@ -271,6 +271,10 @@ function updateInput(delta) {
 
 
   // Forward/backward
+  
+  if(keys[32]) { // Space
+      bodyPosition.y += step
+  }
 
   if(keys[87] || keys[38]){ // W or UP
       bodyPosition.x += Math.cos(viewAngle) * step;
