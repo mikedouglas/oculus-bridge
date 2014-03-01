@@ -305,7 +305,6 @@ function updateInput(delta) {
   if(keys[32]){ //space
       velo.z = -50;
       velo.applyQuaternion(camera.quaternion);
-      velo.y = oldVelo.y;
   }
   if(keys[90]){
       velo.y = 50;
