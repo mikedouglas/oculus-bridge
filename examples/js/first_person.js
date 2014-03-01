@@ -9,7 +9,7 @@ var ambient, point;
 var aspectRatio, windowHalf;
 var mouse, time;
 
-var goingUp = true;
+var goingUp = false;
 var deltaPosY = 0;
 
 var controls;
@@ -294,7 +294,8 @@ function updateInput(delta) {
   // Forward/backward
   
   if(keys[32]) { // Space
-      bodyPosition.y += step
+      ball.position.y += step;
+      ball.__dirtyPosition = true;
   }
 
   if(keys[87] || keys[38]){ // W or UP
@@ -339,20 +340,22 @@ function updateInput(delta) {
   }
   
   var displacement = goingUp ? VERTICAL_SPEED : -VERTICAL_SPEED;
-  //bodyPosition.y += displacement;
-  //deltaPosY += displacement;
+  ball.position.y += displacement;
+  ball.__dirtyPosition = true;
   //velocity.y -= 0.15;
   //bodyPosition.y += velocity.y;
   
-  //if(bodyPosition.y < 15){
+  if(ball.position.y < 15){
   //  velocity.y *= -0.12;
-  //  bodyPosition.y = 15;
-  //}
-  bodyPosition = ball.position;
+    ball.position.y = 15;
+  } else {
+    deltaPosY += displacement;
+    console.log(deltaPosY);
+  }
 
   // update the camera position when rendering to the oculus rift.
   if(useRift) {
-    camera.position.set(bodyPosition.x, bodyPosition.y, bodyPosition.z);
+    camera.position.set(ball.position.x, ball.position.y, ball.position.z);
   }
 }
 
