@@ -92,8 +92,8 @@ function initGeometry(){
   floorTexture.anisotropy = 32;
 
   var floorMaterial = new THREE.MeshBasicMaterial( { map: floorTexture } );
-  var floorGeometry = new THREE.PlaneGeometry(1000, 1000, 10, 10);
-  var floor = new THREE.Mesh(floorGeometry, floorMaterial);
+  var floorGeometry = new THREE.CubeGeometry(1000, 1000, 2, 10, 10);
+  var floor = new Physijs.BoxMesh(floorGeometry, Physijs.createMaterial(floorMaterial, 0.4, 0.8), 0);
   floor.rotation.x = -Math.PI / 2;
 
   scene.add(floor);
@@ -324,7 +324,6 @@ function updateInput(delta) {
   
 
   // VERY simple gravity/ground plane physics for jumping.
-  console.log(bodyPosition);
   if (deltaPosY > VERTICAL_DELTA) {
       goingUp = true;
   }
@@ -333,8 +332,8 @@ function updateInput(delta) {
   }
   
   var displacement = goingUp ? VERTICAL_SPEED : -VERTICAL_SPEED;
-  bodyPosition.y += displacement;
-  deltaPosY += displacement;
+  //bodyPosition.y += displacement;
+  //deltaPosY += displacement;
   //velocity.y -= 0.15;
   //bodyPosition.y += velocity.y;
   
@@ -360,22 +359,6 @@ function animate() {
     core[i].rotation.y -= delta * 0.33;
     core[i].rotation.z += delta * 0.1278;
   }
-
-  var bounds = 600;
-  for(var i = 0; i < dataPackets.length; i++){
-    dataPackets[i].obj.position.add( dataPackets[i].speed);
-    if(dataPackets[i].obj.position.x < -bounds) {
-      dataPackets[i].obj.position.x = bounds;
-    } else if(dataPackets[i].obj.position.x > bounds){
-      dataPackets[i].obj.position.x = -bounds;
-    }
-    if(dataPackets[i].obj.position.z < -bounds) {
-      dataPackets[i].obj.position.z = bounds;
-    } else if(dataPackets[i].obj.position.z > bounds){
-      dataPackets[i].obj.position.z = -bounds;
-    }
-  }
-
   
   if(render()){
     requestAnimationFrame(animate);  
@@ -419,4 +402,5 @@ function render() {
 window.onload = function() {
   init();
   animate();
+  scene.simulate();
 }
