@@ -1,8 +1,14 @@
+var VERTICAL_DELTA = 5;
+var VERTICAL_SPEED = 1;
+
 var renderer, camera;
 var scene, element;
 var ambient, point;
 var aspectRatio, windowHalf;
 var mouse, time;
+
+var goingUp = true;
+var deltaPosY = 0;
 
 var controls;
 var clock;
@@ -31,6 +37,8 @@ for(var i = 0; i < 130; i++){
   keys.push(false);
 }
 
+Physijs.scripts.worker = '/examples/lib/physijs_worker.js';
+Physijs.scripts.ammo = '/examples/lib/ammo.js';
 
 function initScene() {
   clock = new THREE.Clock();
@@ -39,10 +47,13 @@ function initScene() {
   windowHalf = new THREE.Vector2(window.innerWidth / 2, window.innerHeight / 2);
   aspectRatio = window.innerWidth / window.innerHeight;
   
-  scene = new THREE.Scene();  
+  scene = new Physijs.Scene();
+  scene.setGravity(new THREE.Vector3(0, -50, 0));
+  scene.addEventListener('update', function () {
+      scene.simulate();
+  })
 
   camera = new THREE.PerspectiveCamera(45, aspectRatio, 1, 10000);
-  camera.useQuaternion = true;
 
   camera.position.set(100, 150, 100);
   camera.lookAt(scene.position);
@@ -52,7 +63,7 @@ function initScene() {
   renderer.setClearColor(0xdbf7ff);
   renderer.setSize(window.innerWidth, window.innerHeight);
 
-   scene.fog = new THREE.Fog(0xdbf7ff, 300, 700);
+  scene.fog = new THREE.Fog(0xdbf7ff, 300, 700);
 
   element = document.getElementById('viewport');
   element.appendChild(renderer.domElement);
@@ -80,14 +91,15 @@ function initGeometry(){
   floorTexture.repeat.set( 50, 50 );
   floorTexture.anisotropy = 32;
 
-  var floorMaterial = new THREE.MeshBasicMaterial( { map: floorTexture, transparent:true, opacity:0.80 } );
+  var floorMaterial = new THREE.MeshBasicMaterial( { map: floorTexture } );
   var floorGeometry = new THREE.PlaneGeometry(1000, 1000, 10, 10);
   var floor = new THREE.Mesh(floorGeometry, floorMaterial);
   floor.rotation.x = -Math.PI / 2;
 
   scene.add(floor);
 
-  // add some boxes.
+  // add some boxes
+  /*
   var boxTexture = new THREE.ImageUtils.loadTexture( "textures/blue_blue.jpg" );
   for(var i = 0; i < 200; i++){
     var material = new THREE.MeshLambertMaterial({ emissive:0x505050, map: boxTexture, color: 0xffffff});
@@ -103,7 +115,9 @@ function initGeometry(){
     boxes.push(box);
     scene.add(box);
   }
+  */
 
+  /*
   for(var i = 0; i < 100; i++){
     var material = new THREE.MeshLambertMaterial({ emissive:0x008000, color: 0x00FF00});
     
@@ -127,7 +141,7 @@ function initGeometry(){
       speed: speedVector
     });
     scene.add(box);
-  }
+  }*/
 }
 
 
@@ -310,10 +324,19 @@ function updateInput(delta) {
   
 
   // VERY simple gravity/ground plane physics for jumping.
+  console.log(bodyPosition);
+  if (deltaPosY > VERTICAL_DELTA) {
+      goingUp = true;
+  }
+  if (deltaPosY < -VERTICAL_DELTA) {
+      goingUp = false;
+  }
   
-  velocity.y -= 0.15;
-  
-  bodyPosition.y += velocity.y;
+  var displacement = goingUp ? VERTICAL_SPEED : -VERTICAL_SPEED;
+  bodyPosition.y += displacement;
+  deltaPosY += displacement;
+  //velocity.y -= 0.15;
+  //bodyPosition.y += velocity.y;
   
   if(bodyPosition.y < 15){
     velocity.y *= -0.12;
