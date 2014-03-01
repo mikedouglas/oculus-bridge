@@ -9,9 +9,6 @@ var ambient, point;
 var aspectRatio, windowHalf;
 var mouse, time;
 
-var goingUp = false;
-var deltaPosY = 0;
-
 var controls;
 var clock;
 
@@ -331,26 +328,12 @@ function updateInput(delta) {
   }
   
 
-  // VERY simple gravity/ground plane physics for jumping.
-  if (deltaPosY > VERTICAL_DELTA) {
-      goingUp = true;
-  }
-  if (deltaPosY < -VERTICAL_DELTA) {
-      goingUp = false;
-  }
-  
-  var displacement = goingUp ? VERTICAL_SPEED : -VERTICAL_SPEED;
-  ball.position.y += displacement;
-  ball.__dirtyPosition = true;
   //velocity.y -= 0.15;
   //bodyPosition.y += velocity.y;
   
   if(ball.position.y < 15){
   //  velocity.y *= -0.12;
     ball.position.y = 15;
-  } else {
-    deltaPosY += displacement;
-    console.log(deltaPosY);
   }
 
   // update the camera position when rendering to the oculus rift.
