@@ -98,6 +98,11 @@ function initGeometry(){
 
   scene.add(floor);
 
+  var ball = new Physijs.SphereMesh(
+          new THREE.SphereGeometry(Math.random() * (4-1) + 1, 16, 16),
+          Physijs.createMaterial(new THREE.MeshLambertMaterial({color:0xff0000, reflectivity: 0.8}), .4, .6), 1);
+  ball.position.set(0, 150, 0);
+  scene.add(ball);
   // add some boxes
   /*
   var boxTexture = new THREE.ImageUtils.loadTexture( "textures/blue_blue.jpg" );
