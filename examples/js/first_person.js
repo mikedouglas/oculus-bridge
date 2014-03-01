@@ -298,25 +298,20 @@ function updateInput(delta) {
   
   // Doesn't affect your Y velocity at all.
   var oldVelo = ball.getLinearVelocity();
-  var velo = new THREE.Vector3(0, 0, -50);
+  var velo = new THREE.Vector3(0,0,0);
   if(keys[32]){ //space
+      velo.z = -50;
       velo.applyQuaternion(camera.quaternion);
-
-      if(keys[90]) { //Z
-          velo.y = 50;
-      }
-      else if(keys[88]) {
-          velo.y = -50;
-      }
-      else {
-          velo.y = oldVelo.y;
-      }
-      ball.setLinearVelocity(velo);
+      velo.y = oldVelo.y;
   }
-  else {
-      ball.setLinearVelocity(new THREE.Vector3(0, 0, 0));
+  if(keys[90]){
+      velo.y = 50;
   }
- 
+  if(keys[88]){
+      velo.y = -50;
+  }
+  ball.setLinearVelocity(velo);
+  
   // update the camera position when rendering to the oculus rift.
   if(useRift) {
     camera.position.set(ball.position.x, ball.position.y, ball.position.z);
