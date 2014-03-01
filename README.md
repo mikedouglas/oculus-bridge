@@ -25,9 +25,9 @@ The goal of this project is to provide a flexible, simple way to access the trac
 
 - Download and launch the OculusBrige host application
 - Open one of the example pages:
-	- [Basic Connection Test](http://instrument.github.io/oculus-bridge/examples/connect.html)
-	- [First Person Example](http://instrument.github.io/oculus-bridge/examples/first_person.html)
-	- [CSS Shader Example](http://instrument.github.io/oculus-bridge/examples/css_shaders.html)
+	- [Basic Connection Test](http://mikedouglas.github.io/oculus-bridge/examples/connect.html)
+	- [First Person Example](http://mikedouglas.github.io/oculus-bridge/examples/first_person.html)
+	- [CSS Shader Example](http://mikedouglas.github.io/oculus-bridge/examples/css_shaders.html)
 - Plug in your Oculus Rift (you probably already did this already..)
 
 The order in which these things occur isn't important.  The app and JavaScript are built to handle loosing connectivity, having the hardware connected and disconnected randomly at runtime, etc.
