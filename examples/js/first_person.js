@@ -104,7 +104,7 @@ function initGeometry(){
           Physijs.createMaterial(new THREE.MeshLambertMaterial({color:0xff0000, reflectivity: 0.8}), .8, 0), 7);
   ball.position.set(100, 150, 100);
   scene.add(ball);
-  ball.setLinearVelocity(new THREE.Vector3(0, 0, 100));
+  ball.setLinearVelocity(new THREE.Vector3(0, 0, 0));
   // add some boxes
   /*
   var boxTexture = new THREE.ImageUtils.loadTexture( "textures/blue_blue.jpg" );
@@ -271,70 +271,36 @@ function onKeyDown(event) {
   }
 
   // prevent repeat keystrokes.
-  if(!keys[32] && (event.keyCode == 32)){ // Spacebar to jump
-    velocity.y += 1.9;
-    ball.applyCentralImpulse(new THREE.Vector3(0, 300, 0));
-  }
+ if(!keys[90] && (event.keyCode == 90)){ // Spacebar to jump
+   ball.applyCentralImpulse(new THREE.Vector3(0, 500, 0));
+ }
 
+  console.log("Key Down: " + event.keyCode);
   keys[event.keyCode] = true;
 }
 
 
 function onKeyUp(event) {
   keys[event.keyCode] = false;
+
+  console.log("Key Up: " + event.keyCode);
 }
 
 
 function updateInput(delta) {
   
-  var step        = 25 * delta;
-  var turn_speed  = (55 * delta) * Math.PI / 180;
-
-  if(keys[87] || keys[38]){ // W or UP
-      bodyPosition.x += Math.cos(viewAngle) * step;
-      bodyPosition.z += Math.sin(viewAngle) * step;
-  }
-
-  if(keys[83] || keys[40]){ // S or DOWN
-      bodyPosition.x -= Math.cos(viewAngle) * step;
-      bodyPosition.z -= Math.sin(viewAngle) * step;
-  }
-
-  // Turn
-
-  if(keys[81]){ // E
-      bodyAngle += turn_speed;
-  }   
-  
-  if(keys[69]){ // Q
-       bodyAngle -= turn_speed;
-  }
-
-  // Straif
-
-  if(keys[65] || keys[37]){ // A or LEFT
-      bodyPosition.x -= Math.cos(viewAngle + Math.PI/2) * step;
-      bodyPosition.z -= Math.sin(viewAngle + Math.PI/2) * step;
-  }   
-  
-  if(keys[68] || keys[39]){ // D or RIGHT
-      bodyPosition.x += Math.cos(viewAngle+Math.PI/2) * step;
-      bodyPosition.z += Math.sin(viewAngle+Math.PI/2) * step;
-  }
-
+  // Doesn't affect your Y velocity at all.
   var oldVelo = ball.getLinearVelocity();
-  var oldVeloY = oldVelo.y;
-  oldVelo.x = 0;
-  // ????????
-  oldVelo.z = -20;
-  oldVelo.applyQuaternion(camera.quaternion);
-  oldVelo.y = oldVeloY;
-  ball.setLinearVelocity(oldVelo);
+  if(keys[32]){ //space
+      var velo = new THREE.Vector3(0, 0, -50);
+      velo.applyQuaternion(camera.quaternion);
+      velo.y = oldVelo.y;
+      ball.setLinearVelocity(velo);
+  }
+  else {
+      ball.setLinearVelocity(new THREE.Vector3(0, oldVelo.y, 0));
+  }
 
-  //velocity.y -= 0.15;
-  //bodyPosition.y += velocity.y;
-  
-  
   // update the camera position when rendering to the oculus rift.
   if(useRift) {
     camera.position.set(ball.position.x, ball.position.y, ball.position.z);
