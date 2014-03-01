@@ -75,7 +75,7 @@ function initLights(){
 var floorTexture;
 function initGeometry(){
 
-  floorTexture = new THREE.ImageUtils.loadTexture( "textures/tile.jpg" );
+  floorTexture = new THREE.ImageUtils.loadTexture( "textures/grass_tile.jpg" );
   floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
   floorTexture.repeat.set( 50, 50 );
   floorTexture.anisotropy = 32;
