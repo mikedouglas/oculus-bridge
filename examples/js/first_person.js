@@ -19,7 +19,6 @@ var useRift = true;
 var riftCam;
 
 var boxes = [];
-var core = [];
 var dataPackets = [];
 
 var ground, groundGeometry, groundMaterial;
@@ -123,31 +122,6 @@ function initGeometry(){
     scene.add(box);
   }
   */
-
-  for(var i = 0; i < 500; i++){
-    var material = new THREE.MeshLambertMaterial({ emissive:0x008000, color: 0x00FF00});
-    
-    var size = Math.random() * 15+3;
-    
-    var box = new THREE.Mesh( new THREE.CubeGeometry(size, size*0.1, size*0.1), material);
-
-    box.position.set(Math.random() * 1000 - 500, Math.random() * 1000 + 100 ,Math.random() * 1000 - 500);
-    //box.rotation.set(Math.random() * Math.PI * 2, Math.random() * Math.PI * 2, Math.random() * Math.PI * 2);
-    
-    var speedVector;
-    if(Math.random() > 0.5){
-      speedVector = new THREE.Vector3(0, 0, Math.random() * 1.5 + 0.5);
-      box.rotation.y = Math.PI / 2;
-    } else {
-      speedVector = new THREE.Vector3(Math.random() * 1.5 + 0.5, 0, 0);
-    }
-
-    dataPackets.push({
-      obj: box,
-      speed: speedVector
-    });
-    scene.add(box);
-  }
 }
 
 
@@ -313,11 +287,6 @@ function animate() {
   time += delta;
   
   updateInput(delta);
-  for(var i = 0; i < core.length; i++){
-    core[i].rotation.x += delta * 0.25;
-    core[i].rotation.y -= delta * 0.33;
-    core[i].rotation.z += delta * 0.1278;
-  }
   
   if(render()){
     requestAnimationFrame(animate);  
@@ -338,22 +307,12 @@ function crashOther(e){
 }
 
 function render() { 
-  try{
     if(useRift){
       riftCam.render(scene, camera);
     }else{
       controls.update();
       renderer.render(scene, camera);
     }  
-  } catch(e){
-    console.log(e);
-    if(e.name == "SecurityError"){
-      crashSecurity(e);
-    } else {
-      crashOther(e);
-    }
-    return false;
-  }
   return true;
 }
 
