@@ -65,7 +65,9 @@ THREEx.ProceduralCity	= function(){
 		map		: texture,
 		vertexColors	: THREE.VertexColors
 	});
-	var mesh = new THREE.Mesh(cityGeometry, material );
+	//var mesh = new THREE.Mesh(cityGeometry, material );
+    var mesh = new Physijs.BoxMesh(cityGeometry,
+            Physijs.createMaterial(material, 0.8, 0.6), 0);
 	return mesh
 
 	function generateTextureCanvas(){
