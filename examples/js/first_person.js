@@ -31,7 +31,8 @@ var viewAngle;
 var velocity;
 var oculusBridge;
 
-var particleCount = 1800,
+var particleCount = 3800,
+    particleSystem,
     particles = new THREE.Geometry(),
     pMaterial = new THREE.ParticleBasicMaterial({
         size: 1,
@@ -42,9 +43,11 @@ var particleCount = 1800,
 
 for (var p = 0; p < particleCount; p++) {
     var pX = Math.random() * 500 - 250,
-    pY = Math.random() * 500 - 250,
+    //pY = Math.random() * 5000,
+    pY = 0,
     pZ = Math.random() * 500 - 250,
     particle = new THREE.Vertex(new THREE.Vector3(pX, pY, pZ));
+    particle.velocity = new THREE.Vector3(0, -Math.random(), 0);
 
     // add it to the geometry
     particles.vertices.push(particle);
@@ -106,7 +109,7 @@ function initLights(){
   
   scene.add(point);
 
-  var particleSystem = new THREE.ParticleSystem(particles, pMaterial);
+  particleSystem = new THREE.ParticleSystem(particles, pMaterial);
   particleSystem.sortParticles = true;
   scene.add(particleSystem);
 }
@@ -311,6 +314,22 @@ function updateInput(delta) {
       velo.y = -50;
   }
   ball.setLinearVelocity(velo);
+
+  var pCount = particleCount;
+  while(pCount--) {
+      var particle = particles.vertices[pCount];
+      if (particle.y < -50) {
+          var bx = ball.position.x;
+          var bz = ball.position.z;
+          particle.x = bx + (Math.random() * 500 - 250);
+          particle.z = bz + (Math.random() * 500 - 250);
+          particle.y = 500*Math.random() + 100;
+          particle.velocity.y = 0;
+      }
+      particle.velocity.y -= Math.random() * .1;
+      particle.add(particle.velocity);
+  }
+  particleSystem.geometry.__dirtyVertices = true;
   
   // update the camera position when rendering to the oculus rift.
   if(useRift) {
