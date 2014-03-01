@@ -48,7 +48,7 @@ function initScene() {
   aspectRatio = window.innerWidth / window.innerHeight;
   
   scene = new Physijs.Scene();
-  scene.setGravity(new THREE.Vector3(0, -50, 0));
+  scene.setGravity(new THREE.Vector3(0, 0, 0));
   scene.addEventListener('update', function () {
       scene.simulate();
   })
