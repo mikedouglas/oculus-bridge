@@ -1,7 +1,11 @@
 var VERTICAL_DELTA = 5;
 var VERTICAL_SPEED = 1;
 
+var scoreSpan = document.getElementById("score");
+
 var ball;
+var score = 0;
+var num_boxes = 30;
 
 var renderer, camera;
 var scene, element;
@@ -70,7 +74,7 @@ function initScene() {
   aspectRatio = window.innerWidth / window.innerHeight;
   
   scene = new Physijs.Scene();
-  scene.setGravity(new THREE.Vector3(0, 0, 0));
+  scene.setGravity(new THREE.Vector3(0, -50, 0));
   scene.addEventListener('update', function () {
       scene.simulate();
   })
@@ -136,28 +140,38 @@ function initGeometry(){
   ball.position.set(100, 150, 100);
   scene.add(ball);
   ball.setLinearVelocity(new THREE.Vector3(0, 0, 0));
+  ball.addEventListener( 'collision', function( other_object, relative_velocity, relative_rotation, contact_normal ) {
+      if (other_object.can_interact) {
+          score += 1;
+          scoreSpan.innerHTML = score + "/" + num_boxes;
+          other_object.can_interact = false;
+          other_object.material.color.setHex(0xff0000)
+          other_object.material.map = floorTexture;
+          other_object.material.needsUpdate = true
+      }
+  });
+
 
   var city  = new THREEx.ProceduralCity();
   scene.add(city);
 
   // add some boxes
-  /*
   var boxTexture = new THREE.ImageUtils.loadTexture( "textures/blue_blue.jpg" );
-  for(var i = 0; i < 200; i++){
+  for(var i = 0; i < num_boxes; i++){
     var material = new THREE.MeshLambertMaterial({ emissive:0x505050, map: boxTexture, color: 0xffffff});
     
-    var height = Math.random() * 150+10;
-    var width = Math.random() * 20 + 2;
+    var radius = Math.random() * 5;
     
-    var box = new THREE.Mesh( new THREE.CubeGeometry(width, height, width), material);
+    var box = new Physijs.SphereMesh( new THREE.SphereGeometry(4), material);
+    box.can_interact= true;
 
-    box.position.set(Math.random() * 1000 - 500, height/2 ,Math.random() * 1000 - 500);
-    box.rotation.set(0, Math.random() * Math.PI * 2, 0);
+    box.position.set(Math.random() * 1000 - 500, 0, Math.random() * 1000 - 500);
+    //box.rotation.set(0, Math.random() * Math.PI * 2, 0);
+    box.rotation.set(0,0, 0);
     
     boxes.push(box);
     scene.add(box);
   }
-  */
 }
 
 
@@ -285,7 +299,6 @@ function onKeyDown(event) {
    ball.applyCentralImpulse(new THREE.Vector3(0, 500, 0));
  }
 
-  console.log("Key Down: " + event.keyCode);
   keys[event.keyCode] = true;
 }
 
@@ -293,7 +306,6 @@ function onKeyDown(event) {
 function onKeyUp(event) {
   keys[event.keyCode] = false;
 
-  console.log("Key Up: " + event.keyCode);
 }
 
 
@@ -305,6 +317,7 @@ function updateInput(delta) {
   if(keys[32]){ //space
       velo.z = -50;
       velo.applyQuaternion(camera.quaternion);
+      velo.y = 0;
   }
   if(keys[90]){
       velo.y = 50;

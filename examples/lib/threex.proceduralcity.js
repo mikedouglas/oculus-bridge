@@ -16,7 +16,11 @@ THREEx.ProceduralCity	= function(){
 	geometry.faceVertexUvs[0][2][2].set( 0, 0 );
 	//geometry.faceVertexUvs[0][2][3].set( 0, 0 );
 	// buildMesh
-	var buildingMesh= new THREE.Mesh( geometry );
+	//var buildingMesh= new THREE.Mesh( geometry );
+    
+    var material = Physijs.createMaterial( new THREE.MeshBasicMaterial({ color: 0x888888 }), .8, .3);
+    var buildingMesh = new Physijs.BoxMesh(geometry, material);
+                                           
 
 	// base colors for vertexColors. light is for vertices at the top, shaddow is for the ones at the bottom
 	var light	= new THREE.Color( 0xffffff )
@@ -65,9 +69,9 @@ THREEx.ProceduralCity	= function(){
 		map		: texture,
 		vertexColors	: THREE.VertexColors
 	});
-	var mesh = new THREE.Mesh(cityGeometry, material );
-    //var mesh = new Physijs.BoxMesh(cityGeometry,
-    //        Physijs.createMaterial(material, 0.8, 0.6), 0);
+	//var mesh = new THREE.Mesh(cityGeometry, material );
+    var mesh = new Physijs.ConcaveMesh(cityGeometry,
+            Physijs.createMaterial(material, 0.8, 0.6), 0);
     mesh.castShadow = true;
 	return mesh
 
